@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "GameFramework/Actor.h"
+#include "Engine/StaticMeshActor.h"
 #include "Ball.generated.h"
 
 UCLASS()
-class PONG_API ABall : public AActor
+class PONG_API ABall : public AStaticMeshActor
 {
 	GENERATED_BODY()
 	
@@ -14,14 +14,22 @@ public:
 	// Sets default values for this actor's properties
 	ABall();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	// Current velocity of the ball
+	FVector Velocity = FVector::ZeroVector;
 
-	
-	
+	// Max angle of random rotation to be applied when hitting a Paddle
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float RandomHitRotationAngle = 10.0f;
+
+private:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 };
