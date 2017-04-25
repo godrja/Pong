@@ -35,10 +35,14 @@ void ABall::Tick(float DeltaTime)
 	AddActorWorldOffset(Velocity * DeltaTime, true);
 }
 
+
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// TODO: Extract tags as constants
+
 	if (OtherActor->ActorHasTag("Paddle"))
 	{
+		// Invert vertical component of velocity
 		FVector InvertedVelocity = FVector(1, -1, 1) * Velocity;
 
 		// Add random rotation to a vector 
@@ -46,4 +50,10 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 		const FRotator RandomRotator = FRotator(0.0f, (FMath::FRand() - 0.5f) * RandomHitRotationAngle, 0.0f);
 		Velocity = RandomRotator.RotateVector(InvertedVelocity);
 	}
+	else if (OtherActor->ActorHasTag("Border"))
+	{
+		// Invert vertical component of velocity
+		Velocity *= FVector(-1, 1, 1);
+	}
+
 }
