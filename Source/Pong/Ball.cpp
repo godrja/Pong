@@ -31,10 +31,9 @@ void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Moving the ball
+	// Move the ball
 	AddActorWorldOffset(Velocity * DeltaTime, true);
 }
-
 
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -42,18 +41,19 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 
 	if (OtherActor->ActorHasTag("Paddle"))
 	{
-		// Invert vertical component of velocity
-		FVector InvertedVelocity = FVector(1, -1, 1) * Velocity;
+		const FVector ImpactPointBasedVelocity = 
+			((OtherActor->GetActorLocation() + Hit.ImpactPoint) // Vector that points from the middle of the paddle to the impact point
+			* FVector(1.0f, -1.0f, 1.0f)).GetSafeNormal2D() // Get the direction of that vector but moving from the paddle
+			* Velocity.Size(); // Give it the current velocity
 
-		// Add random rotation to a vector 
+		// Add random rotation to vector
 		// TODO: Extract as a method
 		const FRotator RandomRotator = FRotator(0.0f, (FMath::FRand() - 0.5f) * RandomHitRotationAngle, 0.0f);
-		Velocity = RandomRotator.RotateVector(InvertedVelocity);
+		Velocity = RandomRotator.RotateVector(ImpactPointBasedVelocity);
 	}
 	else if (OtherActor->ActorHasTag("Border"))
 	{
-		// Invert vertical component of velocity
-		Velocity *= FVector(-1, 1, 1);
+		// Reflect the ball in vertical direction
+		Velocity *= FVector(-1.0f, 1.0f, 1.0f);
 	}
-
 }
