@@ -24,6 +24,10 @@ protected:
 	// Current velocity of the ball
 	FVector Velocity = FVector::ZeroVector;
 
+
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float InitialSpeed = 500.0f;
+
 	// Max angle of random rotation to be applied when hitting a Paddle
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float RandomHitRotationAngle = 10.0f;

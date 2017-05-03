@@ -20,7 +20,7 @@ void ABall::BeginPlay()
 	Super::BeginPlay();
 	
 	// TODO: Add some random angle to this rotation for more fun
-	Velocity = FVector(0.0f, 500.0f, 0.0f);
+	Velocity = FVector(0.0f, InitialSpeed, 0.0f);
 
 	// Register OnHit event
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &ABall::OnHit);
