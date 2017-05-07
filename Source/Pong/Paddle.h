@@ -6,7 +6,7 @@
 #include "Paddle.generated.h"
 
 UCLASS()
-class PONG_API APaddle : public AActor
+class PONG_API APaddle : public APawn
 {
 	GENERATED_BODY()
 	
@@ -18,10 +18,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	float CurrentSpeed = 0;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	
+	/**
+	 * Sets the new speed, clamps it between -1.0 and 1.0 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void SetCurrentSpeed(float NewSpeed);
 	
 };

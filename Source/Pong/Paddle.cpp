@@ -23,6 +23,9 @@ void APaddle::BeginPlay()
 void APaddle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+void APaddle::SetCurrentSpeed(float NewSpeed)
+{
+	CurrentSpeed = FMath::Clamp(NewSpeed, -1.0f, 1.0f);
+}
