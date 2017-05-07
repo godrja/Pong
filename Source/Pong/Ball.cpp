@@ -18,8 +18,10 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &ABall::OnHit);
+	GetStaticMeshComponent()->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnBeginOverlap);
 
-	Velocity = RotateRandomly(FVector(0.0f, InitialSpeed, 0.0f));
+	InitialLocation = GetActorLocation();
+	Launch();
 }
 
 // Called every frame
@@ -29,6 +31,17 @@ void ABall::Tick(float DeltaTime)
 
 	// Move the ball
 	AddActorWorldOffset(Velocity * DeltaTime, true);
+}
+
+void ABall::ResetPosition()
+{
+	SetActorLocation(InitialLocation);
+	Velocity = FVector::ZeroVector;
+}
+
+void ABall::Launch()
+{
+	Velocity = RotateRandomly(FVector(0.0f, InitialSpeed, 0.0f));
 }
 
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -47,6 +60,15 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 	{
 		// Reflect the ball in vertical direction
 		Velocity *= FVector(-1.0f, 1.0f, 1.0f);
+	}
+}
+
+void ABall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor->ActorHasTag("Out"))
+	{
+		OnBallOut.Broadcast();
+		UE_LOG(LogTemp, Warning, TEXT("OnBallOut has been broadcasted"));
 	}
 }
 
