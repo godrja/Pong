@@ -23,8 +23,7 @@ protected:
 
 	// Current velocity of the ball
 	FVector Velocity = FVector::ZeroVector;
-
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float InitialSpeed = 500.0f;
 
@@ -36,4 +35,6 @@ private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	// Add random rotation to vector
+	FVector RotateRandomly(FVector vector) const;
 };

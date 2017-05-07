@@ -11,19 +11,15 @@ ABall::ABall()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SetMobility(EComponentMobility::Movable);
-	
 }
 
 // Called when the game starts or when spawned
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// TODO: Add some random angle to this rotation for more fun
-	Velocity = FVector(0.0f, InitialSpeed, 0.0f);
-
-	// Register OnHit event
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &ABall::OnHit);
+
+	Velocity = RotateRandomly(FVector(0.0f, InitialSpeed, 0.0f));
 }
 
 // Called every frame
@@ -45,15 +41,16 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 			((OtherActor->GetActorLocation() + Hit.ImpactPoint) // Vector that points from the middle of the paddle to the impact point
 			* FVector(1.0f, -1.0f, 1.0f)).GetSafeNormal2D() // Get the direction of that vector but moving from the paddle
 			* Velocity.Size(); // Give it the current velocity
-
-		// Add random rotation to vector
-		// TODO: Extract as a method
-		const FRotator RandomRotator = FRotator(0.0f, (FMath::FRand() - 0.5f) * RandomHitRotationAngle, 0.0f);
-		Velocity = RandomRotator.RotateVector(ImpactPointBasedVelocity);
+		Velocity = RotateRandomly(ImpactPointBasedVelocity);
 	}
 	else if (OtherActor->ActorHasTag("Border"))
 	{
 		// Reflect the ball in vertical direction
 		Velocity *= FVector(-1.0f, 1.0f, 1.0f);
 	}
+}
+
+FVector ABall::RotateRandomly(FVector vector) const
+{
+	return FRotator(0.0f, (FMath::FRand() - 0.5f) * RandomHitRotationAngle, 0.0f).RotateVector(vector);
 }
