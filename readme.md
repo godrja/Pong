@@ -36,3 +36,5 @@ The angle the ball gets reflected off the paddle depends on where the paddle is 
 	* 
 		* The more you play the better visuals become;
 		* 3d Pong;
+
+Using Pixeled font http://www.dafont.com/pixeled.font
