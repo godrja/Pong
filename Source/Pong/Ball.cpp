@@ -44,6 +44,14 @@ void ABall::Launch()
 	Velocity = RotateRandomly(FVector(0.0f, InitialSpeed, 0.0f));
 }
 
+void ABall::Relaunch()
+{
+	ResetPosition();
+
+	FTimerHandle Handle; // throw away handle
+	GetWorldTimerManager().SetTimer(Handle, this, &ABall::Launch, 0.5f, false);
+}
+
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// TODO: Extract tags as constants

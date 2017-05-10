@@ -13,6 +13,7 @@ void APaddleAIController::Tick(float DeltaTime)
 	if (!ensure(TheBall)) { return; }
 
 	APaddle* Paddle = Cast<APaddle>(GetPawn());
+	if (!Paddle) { return; }
 
 	FVector PaddleLocation = Paddle->GetActorLocation();
 	FVector BallLocation = TheBall->GetActorLocation();

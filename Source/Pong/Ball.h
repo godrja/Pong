@@ -27,6 +27,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void Launch();
 
+	// Re-launch the ball with a small delay
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void Relaunch();
+
 	UPROPERTY(BlueprintAssignable)
 	FBallOut OnBallOut;
 
