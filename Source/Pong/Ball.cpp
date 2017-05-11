@@ -74,6 +74,8 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 
 void ABall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// Probably this should be a responsibility of another object but now game area borders are simple trigger volumes
+	// so it is the most convenient place to place the event.
 	if (OtherActor->ActorHasTag("Out Right"))
 	{
 		OnBallOut.Broadcast(EPlayer::P_RIGHT);
