@@ -3,9 +3,10 @@
 #pragma once
 
 #include "Engine/StaticMeshActor.h"
+#include "PongGameModeBase.h"
 #include "Ball.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBallOut);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBallOut, EPlayer, player);
 
 UCLASS()
 class PONG_API ABall : public AStaticMeshActor

@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Pong.h"
+#include "PongGameModeBase.h"
 #include "Ball.h"
 
 
@@ -73,10 +74,13 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 
 void ABall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag("Out"))
+	if (OtherActor->ActorHasTag("Out Right"))
 	{
-		OnBallOut.Broadcast();
-		UE_LOG(LogTemp, Warning, TEXT("OnBallOut has been broadcasted"));
+		OnBallOut.Broadcast(EPlayer::P_RIGHT);
+	}
+	else if (OtherActor->ActorHasTag("Out Left"))
+	{
+		OnBallOut.Broadcast(EPlayer::P_LEFT);
 	}
 }
 
