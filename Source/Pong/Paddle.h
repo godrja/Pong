@@ -30,5 +30,11 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void SetCurrentSpeed(float NewSpeed);
-	
+
+	// Resets the paddle's position to the initial one and sets the current speed to 0.0
+	UFUNCTION(BlueprintCallable, Category = "Position")
+	void ResetPosition();
+
+private:
+	FVector InitialLocation = FVector::ZeroVector;
 };

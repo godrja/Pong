@@ -17,6 +17,7 @@ void APaddle::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	InitialLocation = GetActorLocation();
 }
 
 // Called every frame
@@ -28,4 +29,10 @@ void APaddle::Tick(float DeltaTime)
 void APaddle::SetCurrentSpeed(float NewSpeed)
 {
 	CurrentSpeed = FMath::Clamp(NewSpeed, -1.0f, 1.0f);
+}
+
+void APaddle::ResetPosition()
+{
+	SetActorLocation(InitialLocation);
+	CurrentSpeed = 0.0f;
 }
