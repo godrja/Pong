@@ -61,6 +61,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	float RandomHitRotationAngle = 10.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float DefaultSpeedIncrement = 50.0f;
+
 private:
 	// Current velocity of the ball
 	FVector Velocity = FVector::ZeroVector;

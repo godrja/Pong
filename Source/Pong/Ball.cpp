@@ -10,7 +10,7 @@ ABall::ABall()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	GetStaticMeshComponent()->bGenerateOverlapEvents = true;
 	SetMobility(EComponentMobility::Movable);
 }
 
@@ -18,6 +18,7 @@ ABall::ABall()
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	GetStaticMeshComponent()->OnComponentHit.AddDynamic(this, &ABall::OnHit);
 	GetStaticMeshComponent()->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnBeginOverlap);
 
@@ -73,6 +74,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 			* FVector(1.0f, -1.0f, 1.0f)).GetSafeNormal2D() // Get the direction of that vector but moving from the paddle
 			* Velocity.Size(); // Give it the current velocity
 		Velocity = RotateRandomly(ImpactPointBasedVelocity);
+		Velocity += Velocity.GetSafeNormal2D() * DefaultSpeedIncrement; // Speed-up in the current direction
 	}
 	else if (OtherActor->ActorHasTag("Border"))
 	{
