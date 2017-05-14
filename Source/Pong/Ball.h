@@ -25,12 +25,14 @@ public:
 	void ResetPosition();
 
 	// Gives the ball some initial velocity
+	// @param Player Player to launch to
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-	void Launch();
+	void Launch(EPlayer Player);
 
 	// Re-launch the ball with a small delay
+	// @param Player Player to launch to
 	UFUNCTION(BlueprintCallable, Category = "Movement")
-	void Relaunch();
+	void Relaunch(EPlayer Player);
 
 	UPROPERTY(BlueprintAssignable)
 	FBallOut OnBallOut;

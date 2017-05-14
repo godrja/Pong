@@ -22,7 +22,6 @@ void ABall::BeginPlay()
 	GetStaticMeshComponent()->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnBeginOverlap);
 
 	InitialLocation = GetActorLocation();
-	Launch();
 }
 
 // Called every frame
@@ -40,17 +39,27 @@ void ABall::ResetPosition()
 	Velocity = FVector::ZeroVector;
 }
 
-void ABall::Launch()
+void ABall::Launch(EPlayer Player)
 {
+	float ThrowSpeed; // by default throw right
+	if (Player == EPlayer::P_RIGHT)
+	{
+		ThrowSpeed = InitialSpeed;
+	}
+	else
+	{
+		ThrowSpeed = -InitialSpeed;
+	}
+
 	Velocity = RotateRandomly(FVector(0.0f, InitialSpeed, 0.0f));
 }
 
-void ABall::Relaunch()
+void ABall::Relaunch(EPlayer Player)
 {
 	ResetPosition();
 
 	FTimerHandle Handle; // throw away handle
-	GetWorldTimerManager().SetTimer(Handle, this, &ABall::Launch, 0.5f, false);
+	GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateUObject(this, &ABall::Launch, Player), 0.5f, false);
 }
 
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
