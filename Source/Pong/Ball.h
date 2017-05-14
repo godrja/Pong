@@ -20,6 +20,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
 	// Resets the ball's position to it's initial state. Sets Velocity to zero.
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void ResetPosition();
@@ -34,23 +39,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void Relaunch(EPlayer Player);
 
-	UPROPERTY(BlueprintAssignable)
-	FBallOut OnBallOut;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	float InitialSpeed = 500.0f;
-
-	// Max angle of random rotation to be applied when hitting a Paddle
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
-	float RandomHitRotationAngle = 10.0f;
-
-	// Current velocity of the ball
-	FVector Velocity = FVector::ZeroVector;
-
 private:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -60,6 +48,22 @@ private:
 
 	// Add random rotation to vector
 	FVector RotateRandomly(FVector vector) const;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FBallOut OnBallOut;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float InitialSpeed = 500.0f;
+
+	// Max angle of random rotation to be applied when hitting a Paddle
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float RandomHitRotationAngle = 10.0f;
+
+private:
+	// Current velocity of the ball
+	FVector Velocity = FVector::ZeroVector;
 
 	FVector InitialLocation;
 };
