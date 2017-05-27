@@ -57,10 +57,13 @@ void ABall::Launch(EPlayer Player)
 
 void ABall::Relaunch(EPlayer Player)
 {
+	const float RelaunchDelay = 0.5f;
 	ResetPosition();
 
 	FTimerHandle Handle; // throw away handle
-	GetWorldTimerManager().SetTimer(Handle, FTimerDelegate::CreateUObject(this, &ABall::Launch, Player), 0.5f, false);
+	
+	GetWorldTimerManager()
+		.SetTimer(Handle, FTimerDelegate::CreateUObject(this, &ABall::Launch, Player), RelaunchDelay, false);
 }
 
 void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -69,10 +72,33 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 
 	if (OtherActor->ActorHasTag("Paddle"))
 	{
-		const FVector ImpactPointBasedVelocity = 
-			((OtherActor->GetActorLocation() + Hit.ImpactPoint) // Vector that points from the middle of the paddle to the impact point
-			* FVector(1.0f, -1.0f, 1.0f)).GetSafeNormal2D() // Get the direction of that vector but moving from the paddle
-			* Velocity.Size(); // Give it the current velocity
+		// Find angles from forward direction that go to the upper corners of the paddle
+		FVector Origin /* throwaway */, Size;
+		GetActorBounds(true, Origin, Size);
+		const FVector ForwardVector = GetActorForwardVector();
+
+		const FVector LeftUpVector = FVector(-Size.X / 2, Size.Y / 2, 0).GetSafeNormal2D();
+		const float LeftUpRad = FMath::Acos(FVector::DotProduct(LeftUpVector, ForwardVector)) + 0.1f;
+
+		const FVector LeftDownVector = FVector(Size.X / 2, Size.Y / 2, 0).GetSafeNormal2D();
+		const float LeftDownRad = FMath::Acos(FVector::DotProduct(LeftDownVector, ForwardVector)) - 0.1f;
+
+		// Vector that points from the middle of the paddle to the impact point
+		
+		const float ImpactVectorRad = FMath::Acos(FVector::DotProduct((GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D(), ForwardVector));
+
+		FVector DirectionChangeVector;
+		if (ImpactVectorRad <= LeftUpRad && ImpactVectorRad >= LeftDownRad)
+		{
+			DirectionChangeVector = FVector(1.0f, -1.0f, 1.0f);
+		}
+		else
+		{
+			DirectionChangeVector = FVector(-1.0f, 1.0f, 1.0f);
+		}
+
+		const FVector ImpactVector = (OtherActor->GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D();
+		const FVector ImpactPointBasedVelocity = ImpactVector * DirectionChangeVector * Velocity.Size();
 		Velocity = RotateRandomly(ImpactPointBasedVelocity);
 		Velocity += Velocity.GetSafeNormal2D() * DefaultSpeedIncrement; // Speed-up in the current direction
 	}
