@@ -72,7 +72,10 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 
 	if (OtherActor->ActorHasTag("Paddle"))
 	{
-		// Find angles from forward direction that go to the upper corners of the paddle
+		// The following logic is a little complicated for what it does. It calculated the degree or lines that go
+		// from the center to the corners of the ball. This is not really required because the ball is always square
+		// so the angle will always be 45 degrees ~ 0.785398 radians. 
+
 		FVector Origin /* throwaway */, Size;
 		GetActorBounds(true, Origin, Size);
 		const FVector ForwardVector = GetActorForwardVector();
@@ -84,9 +87,10 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 		const float LeftDownRad = FMath::Acos(FVector::DotProduct(LeftDownVector, ForwardVector)) - 0.1f;
 
 		// Vector that points from the middle of the paddle to the impact point
+		const float ImpactVectorRad = 
+			FMath::Acos(FVector::DotProduct((GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D(), ForwardVector));
 		
-		const float ImpactVectorRad = FMath::Acos(FVector::DotProduct((GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D(), ForwardVector));
-
+		// Decide whether the ball will be reflected in vertical axis or horizontal.
 		FVector DirectionChangeVector;
 		if (ImpactVectorRad <= LeftUpRad && ImpactVectorRad >= LeftDownRad)
 		{
