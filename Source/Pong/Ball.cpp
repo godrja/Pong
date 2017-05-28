@@ -91,20 +91,14 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 			FMath::Acos(FVector::DotProduct((GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D(), ForwardVector));
 		
 		// Decide whether the ball will be reflected in vertical axis or horizontal.
-		FVector DirectionChangeVector;
 		if (ImpactVectorRad <= LeftUpRad && ImpactVectorRad >= LeftDownRad)
 		{
-			DirectionChangeVector = FVector(1.0f, -1.0f, 1.0f);
+			ReflectHorizontal(OtherActor, Hit);
 		}
 		else
 		{
-			DirectionChangeVector = FVector(-1.0f, 1.0f, 1.0f);
+			ReflectVertical(Hit);
 		}
-
-		const FVector ImpactVector = (OtherActor->GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D();
-		const FVector ImpactPointBasedVelocity = ImpactVector * DirectionChangeVector * Velocity.Size();
-		Velocity = RotateRandomly(ImpactPointBasedVelocity);
-		Velocity += Velocity.GetSafeNormal2D() * DefaultSpeedIncrement; // Speed-up in the current direction
 	}
 	else if (OtherActor->ActorHasTag("Border"))
 	{
@@ -112,6 +106,7 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 		Velocity *= FVector(-1.0f, 1.0f, 1.0f);
 	}
 }
+
 
 void ABall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -124,6 +119,39 @@ void ABall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 	else if (OtherActor->ActorHasTag("Out Left"))
 	{
 		OnBallOut.Broadcast(EPlayer::P_LEFT);
+	}
+}
+
+void ABall::ReflectHorizontal(AActor* Paddle, const FHitResult &Hit)
+{
+	// Horizontal reflection calculates the angle of reflection based on the section of the paddle that got hit
+	const FVector ImpactVector = (Paddle->GetActorLocation() - Hit.ImpactPoint).GetSafeNormal2D();
+	const FVector ImpactPointBasedVelocity = ImpactVector * FVector(1.0f, -1.0f, 1.0f) * Velocity.Size();
+	Velocity = RotateRandomly(ImpactPointBasedVelocity);
+	// Speed-up in the current direction
+	Velocity += Velocity.GetSafeNormal2D() * DefaultSpeedIncrement;
+}
+
+void ABall::ReflectVertical(const FHitResult &Hit)
+{
+	// This section makes sure the ball only inverts it's velocity if it has to
+	// Velocity should not be inverted when the ball and the paddle that hit it move in the same direction
+	// Otherwise it simply gets stuck.
+
+	bool bNeedToInvertDirection;
+	if (Hit.ImpactPoint.X > GetActorLocation().X)
+	{ // hit upper side
+		bNeedToInvertDirection = Velocity.X > 0;
+	}
+	else
+	{ // hit lower side
+		bNeedToInvertDirection = Velocity.X < 0;
+	}
+
+	if (bNeedToInvertDirection)
+	{
+		// Invert velocity in Y axis
+		Velocity *= FVector(-1.0f, 1.0f, 1.0f);
 	}
 }
 

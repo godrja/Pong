@@ -46,6 +46,10 @@ private:
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	void ReflectHorizontal(AActor* OtherActor, const FHitResult &Hit);
+
+	void ReflectVertical(const FHitResult &Hit);
+
 	// Add random rotation to vector
 	FVector RotateRandomly(FVector vector) const;
 
