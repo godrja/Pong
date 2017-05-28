@@ -81,10 +81,10 @@ void ABall::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimit
 		const FVector ForwardVector = GetActorForwardVector();
 
 		const FVector LeftUpVector = FVector(-Size.X / 2, Size.Y / 2, 0).GetSafeNormal2D();
-		const float LeftUpRad = FMath::Acos(FVector::DotProduct(LeftUpVector, ForwardVector)) + 0.1f;
+		const float LeftUpRad = FMath::Acos(FVector::DotProduct(LeftUpVector, ForwardVector));
 
 		const FVector LeftDownVector = FVector(Size.X / 2, Size.Y / 2, 0).GetSafeNormal2D();
-		const float LeftDownRad = FMath::Acos(FVector::DotProduct(LeftDownVector, ForwardVector)) - 0.1f;
+		const float LeftDownRad = FMath::Acos(FVector::DotProduct(LeftDownVector, ForwardVector));
 
 		// Vector that points from the middle of the paddle to the impact point
 		const float ImpactVectorRad = 
