@@ -5,12 +5,14 @@
 #include "GameFramework/GameModeBase.h"
 #include "PongGameModeBase.generated.h"
 
+
 UENUM(BlueprintType)
 enum class EPlayer : uint8
 {
 	P_RIGHT UMETA(DisplayName = "Right Player"),
-	P_LEFT UMETA(DisplayName = "Left Player")
+	P_LEFT  UMETA(DisplayName = "Left Player")
 };
+
 
 /**
  * 
